@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Appearance, ActivityIndicator, useColorScheme, View, Text, StyleSheet, ClipboardStatic, Pressable, ScrollView, Alert, Button, SafeAreaView, StatusBar, NativeModules, TouchableOpacity, Platform } from 'react-native';
-import Clipboard from 'expo-clipboard';
+import {
+    Appearance, ActivityIndicator, useColorScheme, View, Text, StyleSheet, ClipboardStatic, Pressable, ScrollView, Alert, Button, SafeAreaView, StatusBar, NativeModules, TouchableOpacity, Platform, Clipboard
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as NavigationBar from "expo-navigation-bar";
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import NavigationBarColor from 'react-native-navigation-bar-color';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/CustomButton";
 
 
 
@@ -45,6 +47,9 @@ const TestScreen = () => {
         NavigationBarColor.changeNavigationBarColor('#0000FF');
     };
 
+
+
+
     const [userInfo, setUserInfo] = useState('');
     const [loading, setLoading] = useState(true);
 
@@ -52,6 +57,7 @@ const TestScreen = () => {
         getUserInfo();
     }, []);
 
+    // récupérer les infos d'un utilisateur deja connecté 
     const getUserInfo = async () => {
         try {
             console.log("Récupération des informations")
@@ -68,6 +74,12 @@ const TestScreen = () => {
         }
     };
 
+
+    // copier le code de parrainage
+    const handleCopy = () => {
+        Clipboard.setString(userInfo.referralcode);
+    };
+
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -77,11 +89,7 @@ const TestScreen = () => {
         );
     }
 
-    const copyToClipboard = () => {
-        Clipboard.setStringAsync(text);
-        console.log('Text copied to clipboard:', text);
-    };
-    const text = userInfo.referralcode;
+
     return (
         <SafeAreaView style={[styles.root, { backgroundColor: getBackgroundColor() }]}>
             <Text style={styles.text}> Connecté </Text>
@@ -89,9 +97,16 @@ const TestScreen = () => {
                 <>
                     <Text style={styles.text}>Email: {userInfo.email}</Text>
                     <Text style={styles.text}>Referral Code: {userInfo.referralcode}</Text>
-                    <TouchableOpacity onPress={copyToClipboard}>
-                        <Text style={styles.text}>Click here to copy to Clipboard</Text>
+                    <TouchableOpacity onPress={handleCopy}>
+                        <Text style={styles.text}>Copy</Text>
                     </TouchableOpacity>
+                    <Text style={styles.text}>Achète ta soirée !</Text>
+                    <CustomInput
+                        placeholder="Email"
+                        value={email}
+                        setValue={setEmail}
+                        secureTextEntry={false}
+                    />
                 </>
             ) : (
                 <Text style={styles.text}>Aucune information utilisateur trouvée.</Text>
@@ -109,8 +124,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'black',
     },
     text: {
-        color: 'red',
-        fontSize: 40
+        color: 'white',
+        fontSize: 20
     }
 });
 
