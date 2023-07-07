@@ -1,14 +1,14 @@
 #node_modules/
 #.expo/
 #dist/
-npm-debug.*
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
-*.orig.*
-web-build/
+#npm-debug.*
+#*.jks
+#*.p8
+#*.p12
+#*.key
+#*.mobileprovision
+#*.orig.*
+#web-build/
 
 # macOS
 .DS_Store
@@ -26,7 +26,7 @@ amplify/backend/amplify-meta.json
 amplify/backend/.temp
 build/
 dist/
-node_modules/
+#node_modules/
 aws-exports.js
 awsconfiguration.json
 amplifyconfiguration.json

@@ -102,14 +102,14 @@ const TestScreen = () => {
                     </TouchableOpacity>
                     <Text style={styles.text}>Achète ta soirée !</Text>
                     <CustomInput
-                        placeholder="Email"
+                        placeholder="Code de parrainage ?"
                         value={email}
                         setValue={setEmail}
                         secureTextEntry={false}
                     />
                 </>
             ) : (
-                <Text style={styles.text}>Aucune information utilisateur trouvée.</Text>
+                <Text style={styles.text}>Aucune information utilisateur trouvée</Text>
             )}
         </SafeAreaView>
     );
