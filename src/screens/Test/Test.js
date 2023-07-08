@@ -29,30 +29,18 @@ const TestScreen = () => {
 
     const { NavigationBarColor } = NativeModules;
 
-
     useEffect(() => {
         StatusBar.setBarStyle('light-content', true);
         StatusBar.setBackgroundColor('#0996AE');
     }, []);
 
-    const handleSetToRed = () => {
-        NavigationBarColor.changeNavigationBarColor('#FF0000');
-    };
-
-    const handleSetToGreen = () => {
-        NavigationBarColor.changeNavigationBarColor('#00FF00');
-    };
-
-    const handleSetToBlue = () => {
-        NavigationBarColor.changeNavigationBarColor('#0000FF');
-    };
-
-
-
-
     const [userInfo, setUserInfo] = useState('');
     const [loading, setLoading] = useState(true);
+    const [referralCode, setReferralCode] = useState('');
+    const [allReferralCode, setAllReferralCode] = useState('');
 
+
+    // lance la récupération des utilisateurs
     useEffect(() => {
         getUserInfo();
     }, []);
@@ -70,7 +58,7 @@ const TestScreen = () => {
             }
         } catch (error) {
             console.log('Erreur lors de la récupération des informations utilisateur :', error);
-            setLoading(false);
+            setLoading(true);
         }
     };
 
@@ -80,6 +68,7 @@ const TestScreen = () => {
         Clipboard.setString(userInfo.referralcode);
     };
 
+    // si il y a un problème de chargement
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -89,6 +78,29 @@ const TestScreen = () => {
         );
     }
 
+    const onBuyParty = (referralCode) => {
+
+        console.log("Referral Code:", referralCode);
+        //récup les emails afin de de pas créer de double compte
+        const Url = "http://195.20.234.70:3000/connexion/referralcode";
+        var requestOptions = {
+            method: "GET",
+            redirect: "follow",
+        };
+        fetch(Url, requestOptions)
+            .then((response) => response.text())
+            .then((result) => {
+                const allReferralCode = JSON.parse(result);
+                console.log(allReferralCode);
+                setAllReferralCode(allReferralCode);
+                for (let i = 0; i < array.length; i++) {
+                    const element = array[i];
+                    
+                }
+
+            })
+            .catch((error) => console.log("error", error));
+    }
 
     return (
         <SafeAreaView style={[styles.root, { backgroundColor: getBackgroundColor() }]}>
@@ -103,13 +115,19 @@ const TestScreen = () => {
                     <Text style={styles.text}>Achète ta soirée !</Text>
                     <CustomInput
                         placeholder="Code de parrainage ?"
-                        value={email}
-                        setValue={setEmail}
+                        value={referralCode}
+                        setValue={setReferralCode}
                         secureTextEntry={false}
                     />
+
+                    <CustomButton
+                        text="Register"
+                        onPress={() => onBuyParty(referralCode)}
+                    />
+
                 </>
             ) : (
-                <Text style={styles.text}>Aucune information utilisateur trouvée</Text>
+                <Text style={styles.text}>Aucune information utilisateur trouvée.</Text>
             )}
         </SafeAreaView>
     );
