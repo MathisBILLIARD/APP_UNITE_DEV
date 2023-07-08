@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useForm } from 'react-hook-form';
 import axios from 'axios';
 import { SHA256 } from 'crypto-js';
-
+import bcrypt from 'bcryptjs';
 
 
 const SignUpScreen = () => {
@@ -30,6 +30,20 @@ const SignUpScreen = () => {
   const onPrivacyPressed = () => {
     console.warn('onPrivacyPressed');
   };
+
+  // ! ---------- Cryptage mot de passe ----------- //
+
+  const cryptageMdp = async (e) => {
+
+    try{
+        let salt = await bcrypt.genSalt(10)
+        let hash = await bcrypt.hash(e,salt)
+        console.log(hash)
+        return hash
+    }catch(error){
+        console.log(error.message)
+    }
+}
 
   const [eyes, setEyes] = useState(true);
   const [name, setName] = useState('');
@@ -122,12 +136,12 @@ const SignUpScreen = () => {
       console.log('Phone number', phonenumber);
       const referralCode = generateReferralCode();
       console.log('Referral code', referralCode);
-
+      let hash = cryptageMdp(password)
       let data = JSON.stringify({
         "name": name,
         "firstname": firstname,
         "email": email,
-        "password": password,
+        "password": hash,
         "phonenumber": phonenumber,
         "referralcode": referralCode,
       });

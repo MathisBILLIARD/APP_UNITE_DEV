@@ -8,6 +8,9 @@ import CustomButton from "../../components/CustomButton";
 import axios from 'axios';
 import * as NavigationBar from "expo-navigation-bar";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import Cookies from "js-cookie";
+import emailjs from "@emailjs/browser";
+import bcrypt from 'bcryptjs';
 
 
 
@@ -67,7 +70,7 @@ const SignInScreen = () => {
                 let number = -1;
                 console.log("TON ADRESSE MAIL :");
                 console.log(email);
-                for (let i = 0; i < emails2.length; i++) {
+                for (let i = 0; i <= emails2.length; i++) {
                     console.log("LES ADRESSES COMPAREES:");
                     console.log(emails2[i]);
                     if (email === emails2[i]) {
@@ -83,42 +86,39 @@ const SignInScreen = () => {
 
                 console.log("ON ARRIVE A LA COMPARAISON DU MDP");
 
-                for (let index = 0; index < passwords.length; index++) {
-                    console.log(passwords[index]);
-                    if (password === passwords[number]) {
-                        console.log("Bah t'es connecté fdp");
+                if (bcrypt.compareSync(password, passwords[number])) {
+                    console.log("Bah t'es connecté fdp");
 
-                        const userInfoURL = "http://195.20.234.70:3000/connexion/" + email;
+                    const userInfoURL = "http://195.20.234.70:3000/connexion/" + email;
 
-                        var requestOptionsInfoUser = {
-                            method: "GET",
-                            redirect: "follow",
-                        };
+                    var requestOptionsInfoUser = {
+                        method: "GET",
+                        redirect: "follow",
+                    };
 
-                        try {
-                            const response = await fetch(userInfoURL, requestOptionsInfoUser);
-                            const result = await response.text();
-                            const infoUser = JSON.parse(result);
-                            console.log("les infos balancées dans le JSON");
-                            console.log(infoUser);
-                            setUserInfo(infoUser);
+                    try {
+                        const response = await fetch(userInfoURL, requestOptionsInfoUser);
+                        const result = await response.text();
+                        const infoUser = JSON.parse(result);
+                        console.log("les infos balancées dans le JSON");
+                        console.log(infoUser);
+                        setUserInfo(infoUser);
 
-                            AsyncStorage.setItem('userInfo', JSON.stringify(infoUser))
-                                .then(() => {
-                                    console.log('Informations utilisateur enregistrées avec succès.');
-                                    setValidEmail(true);
-                                    setValidMdp(true);
-                                    navigation.navigate('Test');
-                                })
-                                .catch((error) => {
-                                    console.log('Erreur lors de l\'enregistrement des informations utilisateur :', error);
-                                });
-                        } catch (error) {
-                            console.log("error", error);
-                        }
-                    } else {
-                        Alert.alert("Votre identifiant ou votre mot de passe ne correspond pas");
+                        AsyncStorage.setItem('userInfo', JSON.stringify(infoUser))
+                            .then(() => {
+                                console.log('Informations utilisateur enregistrées avec succès.');
+                                setValidEmail(true);
+                                setValidMdp(true);
+                                navigation.navigate('Test');
+                            })
+                            .catch((error) => {
+                                console.log('Erreur lors de l\'enregistrement des informations utilisateur :', error);
+                            });
+                    } catch (error) {
+                        console.log("error", error);
                     }
+                } else {
+                    Alert.alert("Votre identifiant ou votre mot de passe ne correspond pas");
                 }
             }
         } catch (error) {
@@ -126,6 +126,25 @@ const SignInScreen = () => {
         }
     };
 
+    // ! ---------- Cookie ----------//
+
+    const checkCookieExists = (cookieName) => {
+        var cookies = document.cookie.split(";");
+
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.indexOf(cookieName + "=") === 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    const deleteCookie = (cookieName) => {
+        document.cookie =
+            cookieName + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    }
 
 
 
