@@ -142,8 +142,7 @@ const TestScreen = () => {
                             .catch((error) => console.log("error", error));
                         break;
                     }
-                    // GET http://195.20.234.70:3000/connexion/client/VIP1390
-                    // PATCH  http://195.20.234.70:3000/connexion/28 NUMBER PARAINNAGE +1 
+
                 }
 
             })
