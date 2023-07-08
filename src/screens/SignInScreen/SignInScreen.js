@@ -86,39 +86,45 @@ const SignInScreen = () => {
 
                 console.log("ON ARRIVE A LA COMPARAISON DU MDP");
 
-                if (bcrypt.compareSync(password, passwords[number])) {
-                    console.log("Bah t'es connecté fdp");
+                for (let index = 0; index < passwords.length; index++) {
+                    console.log(passwords[index]);
+                    if (password === passwords[number]) {
+                        console.log("Bah t'es connecté fdp");
 
-                    const userInfoURL = "http://195.20.234.70:3000/connexion/" + email;
+                        //  if (bcrypt.compareSync(password, passwords[number])) {
+                        //    console.log("Bah t'es connecté fdp");
 
-                    var requestOptionsInfoUser = {
-                        method: "GET",
-                        redirect: "follow",
-                    };
+                        const userInfoURL = "http://195.20.234.70:3000/connexion/" + email;
 
-                    try {
-                        const response = await fetch(userInfoURL, requestOptionsInfoUser);
-                        const result = await response.text();
-                        const infoUser = JSON.parse(result);
-                        console.log("les infos balancées dans le JSON");
-                        console.log(infoUser);
-                        setUserInfo(infoUser);
+                        var requestOptionsInfoUser = {
+                            method: "GET",
+                            redirect: "follow",
+                        };
 
-                        AsyncStorage.setItem('userInfo', JSON.stringify(infoUser))
-                            .then(() => {
-                                console.log('Informations utilisateur enregistrées avec succès.');
-                                setValidEmail(true);
-                                setValidMdp(true);
-                                navigation.navigate('Test');
-                            })
-                            .catch((error) => {
-                                console.log('Erreur lors de l\'enregistrement des informations utilisateur :', error);
-                            });
-                    } catch (error) {
-                        console.log("error", error);
+                        try {
+                            const response = await fetch(userInfoURL, requestOptionsInfoUser);
+                            const result = await response.text();
+                            const infoUser = JSON.parse(result);
+                            console.log("les infos balancées dans le JSON");
+                            console.log(infoUser);
+                            setUserInfo(infoUser);
+
+                            AsyncStorage.setItem('userInfo', JSON.stringify(infoUser))
+                                .then(() => {
+                                    console.log('Informations utilisateur enregistrées avec succès.');
+                                    setValidEmail(true);
+                                    setValidMdp(true);
+                                    navigation.navigate('Test');
+                                })
+                                .catch((error) => {
+                                    console.log('Erreur lors de l\'enregistrement des informations utilisateur :', error);
+                                });
+                        } catch (error) {
+                            console.log("error", error);
+                        }
+                    } else {
+                        Alert.alert("Votre identifiant ou votre mot de passe ne correspond pas");
                     }
-                } else {
-                    Alert.alert("Votre identifiant ou votre mot de passe ne correspond pas");
                 }
             }
         } catch (error) {

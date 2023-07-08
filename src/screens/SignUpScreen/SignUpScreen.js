@@ -35,15 +35,16 @@ const SignUpScreen = () => {
 
   const cryptageMdp = async (e) => {
 
-    try{
-        let salt = await bcrypt.genSalt(10)
-        let hash = await bcrypt.hash(e,salt)
-        console.log(hash)
-        return hash
-    }catch(error){
-        console.log(error.message)
+    try {
+      const saltRounds = 10;
+      const hashedPassword = bcrypt.hashSync(e, saltRounds);
+
+      console.log(hashedPassword)
+      return hashedPassword
+    } catch (error) {
+      console.log(error.message)
     }
-}
+  }
 
   const [eyes, setEyes] = useState(true);
   const [name, setName] = useState('');
@@ -129,19 +130,21 @@ const SignUpScreen = () => {
       Alert.alert(confpassword)
     } else {
 
+
+      const saltRounds = 10;
+      const hashedPassword = bcrypt.hashSync(password, saltRounds);
       console.log('Name:', name);
       console.log('First Name:', firstname);
       console.log('Email:', email);
-      console.log('Password:', password);
+      console.log('Password:', hashedPassword);
       console.log('Phone number', phonenumber);
       const referralCode = generateReferralCode();
       console.log('Referral code', referralCode);
-      let hash = cryptageMdp(password)
       let data = JSON.stringify({
         "name": name,
         "firstname": firstname,
         "email": email,
-        "password": hash,
+        "password": hashedPassword,
         "phonenumber": phonenumber,
         "referralcode": referralCode,
       });

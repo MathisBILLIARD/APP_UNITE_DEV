@@ -28,6 +28,7 @@
         "expo-navigation-bar": "^2.1.1",
         "expo-status-bar": "~1.4.4",
         "js-cookie": "^3.0.5",
+        "randombytes": "^2.1.0",
         "react": "18.2.0",
         "react-hook-form": "^7.45.1",
         "react-native": "0.71.8",

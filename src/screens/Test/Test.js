@@ -82,20 +82,68 @@ const TestScreen = () => {
 
         console.log("Referral Code:", referralCode);
         //récup les emails afin de de pas créer de double compte
-        const Url = "http://195.20.234.70:3000/connexion/referralcode";
+        const UrlAllReferralCode = "http://195.20.234.70:3000/connexion/code";
         var requestOptions = {
             method: "GET",
             redirect: "follow",
         };
-        fetch(Url, requestOptions)
+        fetch(UrlAllReferralCode, requestOptions)
             .then((response) => response.text())
             .then((result) => {
                 const allReferralCode = JSON.parse(result);
                 console.log(allReferralCode);
                 setAllReferralCode(allReferralCode);
-                for (let i = 0; i < array.length; i++) {
-                    const element = array[i];
-                    
+                for (let i = 0; i < allReferralCode.length; i++) {
+                    if (referralCode == allReferralCode[i]) {
+                        console.log("ON A TROUVE UN CODE QUI EXISTE DANS LA BASE")
+                        console.log(allReferralCode[i])
+                        const UrlAllReferralCode = "http://195.20.234.70:3000/connexion/client/" + referralCode;
+                        var requestOptions = {
+                            method: "GET",
+                            redirect: "follow",
+                        };
+                        fetch(UrlAllReferralCode, requestOptions)
+                            .then((response) => response.text())
+                            .then((result) => {
+                                console.log("affichage info");
+                                const allInfoUser = JSON.parse(result);
+                                console.log(allInfoUser)
+                                let nbrParrainage = parseInt(allInfoUser.numberParrainage);
+                                nbrParrainage = nbrParrainage + 1;
+                                console.log("le nombre de parrainage changé ! :")
+                                console.log(nbrParrainage)
+                                console.log(allInfoUser.id)
+
+                                let data = JSON.stringify({
+                                    "numberParrainage": nbrParrainage
+                                });
+
+                                const UrlUpdateNbrParrainage = "http://195.20.234.70:3000/connexion/" + allInfoUser.id;
+
+
+                                const requestOptions = {
+                                    method: "PATCH",
+                                    redirect: "follow",
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: data
+                                };
+
+                                fetch(UrlUpdateNbrParrainage, requestOptions)
+                                    .then((response) => response.text())
+                                    .then((result) => {
+                                        console.log("C'EST CHANGE CHEF ! ");
+                                    })
+                                    .catch((error) => console.log("error", error));
+
+
+                            })
+                            .catch((error) => console.log("error", error));
+                        break;
+                    }
+                    // GET http://195.20.234.70:3000/connexion/client/VIP1390
+                    // PATCH  http://195.20.234.70:3000/connexion/28 NUMBER PARAINNAGE +1 
                 }
 
             })
