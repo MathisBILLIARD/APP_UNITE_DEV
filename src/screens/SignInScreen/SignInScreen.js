@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Cookies from "js-cookie";
 import emailjs from "@emailjs/browser";
 import bcrypt from 'bcryptjs';
+import { SHA256 } from 'crypto-js';
 
 
 
@@ -70,11 +71,12 @@ const SignInScreen = () => {
                 let number = -1;
                 console.log("TON ADRESSE MAIL :");
                 console.log(email);
-                for (let i = 0; i <= emails2.length; i++) {
+                const emailWithoutSpace = email.replace(/\s+$/, ''); // Supprime les espaces à la fin
+                for (let i = 0; i <= emails2.length; ++i) {
                     console.log("LES ADRESSES COMPAREES:");
                     console.log(emails2[i]);
-                    if (email === emails2[i]) {
-                        number = i;
+                    if (emailWithoutSpace === emails2[i]) {                 //hadri.delobel62@gmail.com
+                        number = i;                             //hadri.delobel62@gmail.com
                         console.log("C'EST LA MEME ADRESSE");
                         break;
                     }
@@ -88,7 +90,7 @@ const SignInScreen = () => {
 
                 for (let index = 0; index < passwords.length; index++) {
                     console.log(passwords[index]);
-                    if (password === passwords[number]) {
+                    if (SHA256(password).toString() === passwords[number]) {
                         console.log("Bah t'es connecté fdp");
 
                         //  if (bcrypt.compareSync(password, passwords[number])) {
@@ -160,7 +162,7 @@ const SignInScreen = () => {
     }
 
     const onSignInFacebook = () => {
-        console.warn("Facebook");
+        navigation.navigate('TestHadrien')
     }
 
     const onSignInGoogle = () => {

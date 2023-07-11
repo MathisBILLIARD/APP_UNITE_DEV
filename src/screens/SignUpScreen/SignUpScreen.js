@@ -131,11 +131,11 @@ const SignUpScreen = () => {
     } else {
 
 
-      const saltRounds = 10;
-      const hashedPassword = bcrypt.hashSync(password, saltRounds);
+      const emailWithoutSpace = email.replace(/\s+$/, ''); // Supprime les espaces à la fin
+      const hashedPassword = SHA256(password).toString();
       console.log('Name:', name);
       console.log('First Name:', firstname);
-      console.log('Email:', email);
+      console.log('Email:', emailWithoutSpace);
       console.log('Password:', hashedPassword);
       console.log('Phone number', phonenumber);
       const referralCode = generateReferralCode();
@@ -143,7 +143,7 @@ const SignUpScreen = () => {
       let data = JSON.stringify({
         "name": name,
         "firstname": firstname,
-        "email": email,
+        "email": emailWithoutSpace,
         "password": hashedPassword,
         "phonenumber": phonenumber,
         "referralcode": referralCode,
